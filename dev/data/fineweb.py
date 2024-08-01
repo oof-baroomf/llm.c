@@ -32,7 +32,7 @@ from data_common import write_datafile
 # ------------------------------------------
 
 parser = argparse.ArgumentParser(description="FineWeb and Edu-FineWeb dataset preprocessing")
-parser.add_argument("-t", "--type", type=str, default="classic", help="Fineweb type, edu|classic")
+parser.add_argument("-t", "--type", type=str, default="edu", help="Fineweb type, edu|classic, edu means sorted, classic means unsorted. Both are fineweb-edu.")
 parser.add_argument("-v", "--version", type=str, default="10B", help="Fineweb data sample size, 10B|100B")
 parser.add_argument("-s", "--shard_size", type=int, default=10**8, help="Size of each data shard in the output .bin files, in tokens")
 args = parser.parse_args()
@@ -41,9 +41,9 @@ args = parser.parse_args()
 assert args.version in {"10B", "100B"}, "version must be one of: 10B, 100B"
 assert args.type in {"edu", "classic"}, "type must be one of: edu, classic"
 directories = {
-    ("classic", "10B"): ("fineweb10B", "sample-10BT"),
+    ("classic", "10B"): ("edu_fineweb10B", "sample-10BT"),
     ("classic", "100B"): ("fineweb100B", "sample-100BT"),
-    ("edu", "10B"): ("edu_fineweb10B", "sample-10BT"),
+    ("edu", "10B"): ("sorted_fineweb10B", "sample-10BT"),
     ("edu", "100B"): ("edu_fineweb100B", "sample-100BT")
 }
 local_dir, remote_name = directories[(args.type, args.version)]
@@ -54,11 +54,11 @@ os.makedirs(DATA_CACHE_DIR, exist_ok=True)
 
 # download the dataset
 if args.type == "classic":
-    fw = load_dataset("HuggingFaceFW/fineweb", name=remote_name, split="train")
-    name = "fineweb"
-elif args.type =="edu":
     fw = load_dataset("HuggingFaceFW/fineweb-edu", name=remote_name, split="train")
     name = "edu_fineweb"
+elif args.type =="edu":
+    fw = load_dataset("oof-baroomf/fineweb-edu-10BT-sorted", split="train")
+    name = "sorted_fineweb"
 
 # init the tokenizer
 enc = tiktoken.get_encoding("gpt2")
