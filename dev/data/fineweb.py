@@ -57,7 +57,7 @@ if args.type == "classic":
     fw = load_dataset("HuggingFaceFW/fineweb-edu", name=remote_name, split="train")
     name = "edu_fineweb"
 elif args.type =="edu":
-    fw = load_dataset("oof-baroomf/fineweb-edu-10BT-sorted", split="train")
+    fw = load_dataset("oof-baroomf/fineweb-edu-10BT-sorted-opposite", split="train")
     name = "sorted_fineweb"
 
 # init the tokenizer
